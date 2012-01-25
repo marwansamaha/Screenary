@@ -11,7 +11,7 @@ namespace Screenary.Server
    	    private static ScreenSessions instance;
 		static readonly object padlock = new object();
 		private Dictionary<string, ScreencastingSession> sessions; 
-		private static UInt32 sessionId = 100;
+		private static Random rnd = new Random();
 		
 		public ScreenSessions ()
 		{
@@ -170,23 +170,20 @@ namespace Screenary.Server
 		
 		private char[] GenerateUniqueKey()
 		{
-			/*
-			string path = Path.GetRandomFileName(); //TODO This does not work for me. It did before but I think I messed something up (@Mar from TA)
-			string attemptSessionKey = path.Replace(".", "").Substring(0, 12).ToUpperInvariant();
-			char[] sessionKey = null;
+			string attemptSessionKey = System.Guid.NewGuid().ToString().Substring(0,12);			
 			while(sessions.ContainsKey(attemptSessionKey))
 			{
-				sessionKey = attemptSessionKey.ToCharArray();
-			}*/
+				attemptSessionKey = System.Guid.NewGuid().ToString().Substring(0,12);
+			}
 			
-			char[] sessionKey = "ABCDEF123456".ToCharArray();
+			char[] sessionKey = attemptSessionKey.ToCharArray();
 			
 			return sessionKey;
 		}
 		
 		private UInt32 GenerateUniqueId()
 		{
-			return sessionId++;
+			return (UInt32) rnd.Next();
 		}
 		
 		private ScreencastingSession GetBySenderSessionId(UInt32 sessionId)
